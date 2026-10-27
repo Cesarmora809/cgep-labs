@@ -10,3 +10,7 @@ crash.log
 
 # OS noise
 .DS_Store
+
+# Original Lab 2.3 Terraform evidence (local only)
+evidence/lab-2-3/plan.json
+evidence/lab-2-3/state.json
