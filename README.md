@@ -28,7 +28,7 @@ Hands-on learning repository documenting my journey through the GRC Engineering 
 | Lab | Project | Status |
 |---|---|---|
 | 2.3 | Building Your First Compliant Resource — AWS S3 | Code recovered; evidence verification pending |
-| 2.4 | Terraform Modules for Compliance — GCP | Deployed; final validation and cleanup pending |
+| 2.4 | Terraform Modules for Compliance — GCP | Completed |
 
 ## Lab Documentation
 
@@ -94,7 +94,7 @@ Hands-on learning repository documenting my journey through the GRC Engineering 
 
 - [Lab 2.4 evidence directory](evidence/lab-2-4/)
 
-**Current status:** Development deployment successful. Final live-resource verification, negative testing, evidence review, repository publication, and infrastructure cleanup remain to be completed.
+**Current status:** Completed. Implemented and deployed the compliant GCS module, validated security controls, collected compliance evidence, and decommissioned the development infrastructure.
 
 ## Repository Structure
 
