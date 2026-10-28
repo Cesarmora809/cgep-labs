@@ -2,8 +2,6 @@
 
 Hands-on learning repository documenting my journey through the GRC Engineering Club labs, with a focus on Infrastructure as Code (IaC), cloud security, policy-as-code, compliance automation, and audit-ready evidence.
 
-**Author:** Cesar Mora
-
 ## Project Objectives
 
 - Translate GRC and security requirements into technical implementations.
@@ -30,9 +28,7 @@ Hands-on learning repository documenting my journey through the GRC Engineering 
 | Lab | Project | Status |
 |---|---|---|
 | 2.3 | Building Your First Compliant Resource — AWS S3 | Code recovered; evidence verification pending |
-| 2.4 | Terraform Modules for Compliance — GCP | In Progress |
-
-Statuses will be updated as implementation, verification, evidence collection, and cleanup are completed.
+| 2.4 | Terraform Modules for Compliance — GCP | Deployed; final validation and cleanup pending |
 
 ## Lab Documentation
 
@@ -58,15 +54,53 @@ Statuses will be updated as implementation, verification, evidence collection, a
 
 **Cloud Platform:** Google Cloud Platform (GCP)
 
-**Objective:** Develop a reusable Terraform module for Google Cloud Storage with built-in compliance requirements.
+**Objective:** Build and deploy a reusable Terraform module that enforces security and compliance requirements for Google Cloud Storage.
 
-**Current status:** In progress. Google Cloud project setup and billing configuration completed; Terraform module implementation pending.
+**Implementation:**
+
+- Developed a reusable Terraform module for compliant Google Cloud Storage.
+- Configured customer-managed encryption keys using Google Cloud KMS.
+- Established a 90-day cryptographic key rotation period.
+- Enforced public access prevention and uniform bucket-level access.
+- Enabled object versioning and a 30-day development retention policy.
+- Implemented required resource labels.
+- Added input validation requiring at least 365 days of retention for production.
+- Created separate development, production, and negative-test consumers.
+
+**Deployment results:**
+
+- Successfully initialized the Terraform configuration.
+- Generated and applied a Terraform deployment plan.
+- Provisioned four Google Cloud resources: KMS keyring, cryptographic key, KMS IAM binding, and Cloud Storage bucket.
+- Generated a machine-readable compliance attestation.
+
+**Security controls addressed:**
+
+- AC-3 — Access Enforcement
+- SC-12 — Cryptographic Key Establishment and Management
+- SC-13 — Cryptographic Protection
+- SC-28 — Protection of Information at Rest
+- AU-11 — Audit Record Retention
+- CM-6 — Configuration Settings
+
+**Source code:**
+
+- [Reusable GCS module](terraform/modules/compliant-gcs-bucket/)
+- [Development configuration](terraform/primitives/compliant-gcs/)
+- [Production configuration](terraform/primitives/compliant-gcs-prod/)
+- [Negative compliance test](terraform/primitives/compliant-gcs-negative/)
+
+**Compliance evidence:**
+
+- [Lab 2.4 evidence directory](evidence/lab-2-4/)
+
+**Current status:** Development deployment successful. Final live-resource verification, negative testing, evidence review, repository publication, and infrastructure cleanup remain to be completed.
 
 ## Repository Structure
 
 The repository follows the GRC Engineering Club's lab organization.
 
-- `terraform/primitives/` — Standalone Terraform configurations
+- `terraform/primitives/` — Standalone Terraform configurations and module consumers
 - `terraform/modules/` — Reusable infrastructure modules
 - `scripts/` — Shared automation scripts
 - `evidence/` — Machine-readable compliance evidence organized by lab
@@ -75,11 +109,11 @@ Some directories will appear on GitHub only when they contain committed files.
 
 ## Security and Evidence Management
 
-Terraform state files, potentially sensitive variable files, local provider installations, and binary plan files should not be committed to this public repository.
+Terraform state files, potentially sensitive variable files, local provider installations, and binary plan files are excluded from public version control.
 
-Evidence will be reviewed for sensitive information before publication.
+Evidence is reviewed for sensitive information before publication.
 
-Lab completion will be based on documented implementation, verification, required evidence, and cleanup—not simply the presence of Terraform source code.
+Lab completion is based on documented implementation, verification, required evidence, and cleanup—not simply the presence of Terraform source code.
 
 ## GRC Engineering Perspective
 
@@ -96,4 +130,3 @@ The goal is to connect compliance requirements with repeatable technical impleme
 - [GRC Engineering Club — Official Repository](https://github.com/GRCEngClub/cgep-labs)
 - [Lab 2.3 — Building Your First Compliant Resource](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/02_03_first_compliant_resource.md)
 - [Lab 2.4 — Terraform Modules for Compliance](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/02_04_terraform_modules_for_compliance.md)
-
