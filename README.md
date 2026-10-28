@@ -27,7 +27,7 @@ Hands-on learning repository documenting my journey through the GRC Engineering 
 
 | Lab | Project | Status |
 |---|---|---|
-| 2.3 | Building Your First Compliant Resource — AWS S3 | Code recovered; evidence verification pending |
+| 2.3 | Building Your First Compliant Resource — AWS S3 | Completed |
 | 2.4 | Terraform Modules for Compliance — GCP | Completed |
 
 ## Lab Documentation
