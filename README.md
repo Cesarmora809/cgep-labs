@@ -29,6 +29,7 @@ Hands-on learning repository documenting my journey through the GRC Engineering 
 |---|---|---|
 | 2.3 | Building Your First Compliant Resource — AWS S3 | Completed |
 | 2.4 | Terraform Modules for Compliance — GCP | Completed |
+| 2.5 | IaC as Compliance Evidence | In Progress |
 
 ## Lab Documentation
 
