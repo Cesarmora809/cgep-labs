@@ -97,6 +97,46 @@ Hands-on learning repository documenting my journey through the GRC Engineering 
 
 **Current status:** Completed. Implemented and deployed the compliant GCS module, validated security controls, collected compliance evidence, and decommissioned the development infrastructure.
 
+### Lab 2.5 — Infrastructure as Code as Compliance Evidence
+
+**Cloud Platform:** Amazon Web Services (AWS)
+
+**Objective:** Automate the collection, integrity verification, and protected storage of Terraform compliance evidence.
+
+**Implementation:**
+- Deployed an AWS S3 evidence vault using Terraform.
+- Enabled Object Lock, versioning, AES-256 encryption, and public access blocking.
+- Automated the collection of Terraform plan, state, Git metadata, and version information.
+- Generated a SHA-256 manifest for evidence integrity verification.
+- Uploaded evidence to versioned S3 storage.
+- Signed the evidence archive using Cosign and Sigstore.
+
+**Deployment and verification results:**
+- Successfully deployed 7 evidence-vault resources.
+- Captured and uploaded the Terraform evidence bundle.
+- Verified all 4 file hashes against the SHA-256 manifest.
+- Confirmed one-day Object Lock retention in GOVERNANCE mode.
+- Tested protected object deletion and received AccessDenied.
+- Confirmed the protected evidence remained available.
+- Generated and uploaded the optional Cosign signature.
+
+**Security controls addressed:**
+- AU-9 — Protection of Audit Information
+- AU-11 — Audit Record Retention
+- SC-28 — Protection of Information at Rest
+- CM-6 — Configuration Settings
+
+**Source code:**
+- [Terraform evidence vault](terraform/primitives/evidence-vault/)
+- [Automated evidence capture script](scripts/capture-evidence.sh)
+
+**Compliance evidence and documentation:**
+- [Lab 2.5 — Detailed README](evidence/lab-2-5/README.md)
+- [Evidence verification report](evidence/lab-2-5/verification-summary.md)
+- [AWS evidence upload receipt](evidence/lab-2-5/receipt.json)
+
+**Current status:** Completed — implementation, evidence capture, control testing, and optional signing. AWS resource cleanup and temporary IAM permission removal remain pending.
+
 ## Repository Structure
 
 The repository follows the GRC Engineering Club's lab organization.
@@ -132,47 +172,3 @@ The goal is to connect compliance requirements with repeatable technical impleme
 - [Lab 2.3 — Building Your First Compliant Resource](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/02_03_first_compliant_resource.md)
 - [Lab 2.4 — Terraform Modules for Compliance](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/02_04_terraform_modules_for_compliance.md)
 
-### Lab 2.5 — Infrastructure as Code as Compliance Evidence
-
-Cloud Platform: Amazon Web Services (AWS)
-
-Objective: Generate, preserve, and verify Terraform compliance evidence using AWS S3 Object Lock, SHA-256 hashing, and Cosign.
-
-Implementation:
-- Deployed a Terraform-managed S3 evidence vault.
-- Enabled S3 versioning and AES-256 server-side encryption.
-- Configured S3 Object Lock in GOVERNANCE mode with one-day retention.
-- Blocked public access to the evidence vault.
-- Developed a Bash script to capture Terraform evidence.
-- Generated a SHA-256 manifest and uploaded the evidence bundle.
-- Used Cosign keyless signing to create a digital signature bundle.
-
-Verification results:
-- Terraform evidence vault: 7 resources deployed successfully.
-- Evidence bundle: Uploaded and assigned a unique S3 version ID.
-- Object retention: GOVERNANCE mode confirmed.
-- Unauthorized deletion test: AccessDenied, as expected.
-- Evidence availability: Confirmed after attempted deletion.
-- SHA-256 integrity: Four evidence files matched the manifest.
-- Cosign signature: Generated and uploaded to the evidence vault.
-
-Evidence:
-- `evidence/lab-2-5/receipt.json`
-- `evidence/lab-2-5/verification-summary.md`
-
-Lessons learned:
-- AWS authentication does not automatically grant S3 authorization.
-- IAM permissions must cover deployment and configuration reads.
-- Git Bash and Windows AWS CLI use different path conventions.
-- S3 Object Lock protects specific object versions.
-- Compliance evidence requires validation, integrity checks, and traceability.
-- Protected S3 evidence requires controlled cleanup procedures.
-
-Status: Completed — implementation and evidence verification. AWS cleanup and temporary IAM permission removal pending.
-
-**Lab 2.5 project documentation:**
-- [Lab 2.5 — Detailed README](evidence/lab-2-5/README.md)
-- [Compliance evidence verification](evidence/lab-2-5/verification-summary.md)
-- [Evidence capture receipt](evidence/lab-2-5/receipt.json)
-- [Terraform evidence vault](terraform/primitives/evidence-vault/)
-- [Evidence capture script](scripts/capture-evidence.sh)
