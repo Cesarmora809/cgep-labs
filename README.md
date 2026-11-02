@@ -131,3 +131,41 @@ The goal is to connect compliance requirements with repeatable technical impleme
 - [GRC Engineering Club — Official Repository](https://github.com/GRCEngClub/cgep-labs)
 - [Lab 2.3 — Building Your First Compliant Resource](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/02_03_first_compliant_resource.md)
 - [Lab 2.4 — Terraform Modules for Compliance](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/02_04_terraform_modules_for_compliance.md)
+
+### Lab 2.5 — Infrastructure as Code as Compliance Evidence
+
+Cloud Platform: Amazon Web Services (AWS)
+
+Objective: Generate, preserve, and verify Terraform compliance evidence using AWS S3 Object Lock, SHA-256 hashing, and Cosign.
+
+Implementation:
+- Deployed a Terraform-managed S3 evidence vault.
+- Enabled S3 versioning and AES-256 server-side encryption.
+- Configured S3 Object Lock in GOVERNANCE mode with one-day retention.
+- Blocked public access to the evidence vault.
+- Developed a Bash script to capture Terraform evidence.
+- Generated a SHA-256 manifest and uploaded the evidence bundle.
+- Used Cosign keyless signing to create a digital signature bundle.
+
+Verification results:
+- Terraform evidence vault: 7 resources deployed successfully.
+- Evidence bundle: Uploaded and assigned a unique S3 version ID.
+- Object retention: GOVERNANCE mode confirmed.
+- Unauthorized deletion test: AccessDenied, as expected.
+- Evidence availability: Confirmed after attempted deletion.
+- SHA-256 integrity: Four evidence files matched the manifest.
+- Cosign signature: Generated and uploaded to the evidence vault.
+
+Evidence:
+- `evidence/lab-2-5/receipt.json`
+- `evidence/lab-2-5/verification-summary.md`
+
+Lessons learned:
+- AWS authentication does not automatically grant S3 authorization.
+- IAM permissions must cover deployment and configuration reads.
+- Git Bash and Windows AWS CLI use different path conventions.
+- S3 Object Lock protects specific object versions.
+- Compliance evidence requires validation, integrity checks, and traceability.
+- Protected S3 evidence requires controlled cleanup procedures.
+
+Status: Core lab tests completed. AWS cleanup pending.
