@@ -29,7 +29,7 @@ Hands-on learning repository documenting my journey through the GRC Engineering 
 |---|---|---|
 | 2.3 | Building Your First Compliant Resource — AWS S3 | Completed |
 | 2.4 | Terraform Modules for Compliance — GCP | Completed |
-| 2.5 | IaC as Compliance Evidence | In Progress |
+| 2.5 | IaC as Compliance Evidence — AWS | Completed |
 
 ## Lab Documentation
 
@@ -168,4 +168,11 @@ Lessons learned:
 - Compliance evidence requires validation, integrity checks, and traceability.
 - Protected S3 evidence requires controlled cleanup procedures.
 
-Status: Core lab tests completed. AWS cleanup pending.
+Status: Completed — implementation and evidence verification. AWS cleanup and temporary IAM permission removal pending.
+
+**Lab 2.5 project documentation:**
+- [Lab 2.5 — Detailed README](evidence/lab-2-5/README.md)
+- [Compliance evidence verification](evidence/lab-2-5/verification-summary.md)
+- [Evidence capture receipt](evidence/lab-2-5/receipt.json)
+- [Terraform evidence vault](terraform/primitives/evidence-vault/)
+- [Evidence capture script](scripts/capture-evidence.sh)
