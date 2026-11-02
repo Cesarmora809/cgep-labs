@@ -30,6 +30,7 @@ Hands-on learning repository documenting my journey through the GRC Engineering 
 | 2.3 | Building Your First Compliant Resource — AWS S3 | Completed |
 | 2.4 | Terraform Modules for Compliance — GCP | Completed |
 | 2.5 | IaC as Compliance Evidence — AWS | Completed |
+| 3.3 | Writing Compliance Policies in Rego — GCP | In Progress |
 
 ## Lab Documentation
 
@@ -137,6 +138,48 @@ Hands-on learning repository documenting my journey through the GRC Engineering 
 
 **Current status:** Completed — implementation, evidence capture, control testing, and optional signing. AWS resource cleanup and temporary IAM permission removal remain pending.
 
+### Lab 3.3 — Writing Compliance Policies in Rego
+
+**Cloud Platform:** Google Cloud Platform (GCP)
+
+**Status:** In Progress
+
+**Objective:** Translate security and compliance requirements into automated Policy-as-Code controls using Open Policy Agent (OPA) and Rego.
+
+**Planned implementation:**
+- Build a Terraform plan-only test environment.
+- Write three Rego compliance policies.
+- Evaluate customer-managed encryption requirements.
+- Detect public cloud storage and exposed firewall rules.
+- Validate required resource labels.
+- Create automated unit tests for each policy.
+- Generate machine-readable compliance test evidence.
+
+**Security controls addressed:**
+- SC-28 — Protection of Information at Rest
+- AC-3 — Access Enforcement
+- CM-6 — Configuration Settings
+
+**Technologies:**
+- Open Policy Agent (OPA)
+- Rego
+- Terraform
+- Google Cloud Platform
+- Git Bash
+- GitHub
+
+**Expected deliverables:**
+- Three Rego compliance policies.
+- Three corresponding policy test files.
+- Terraform test fixture.
+- OPA test results and compliance evidence.
+- Dedicated Lab 3.3 documentation.
+
+**Official guide:**
+[Lab 3.3 — Writing Compliance Policies in Rego](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/03_03_writing_compliance_policies_rego.md)
+
+**Current status:** In Progress — implementation and testing pending.
+
 ## Repository Structure
 
 The repository follows the GRC Engineering Club's lab organization.
@@ -172,3 +215,7 @@ The goal is to connect compliance requirements with repeatable technical impleme
 - [Lab 2.3 — Building Your First Compliant Resource](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/02_03_first_compliant_resource.md)
 - [Lab 2.4 — Terraform Modules for Compliance](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/02_04_terraform_modules_for_compliance.md)
 
+
+- [Lab 2.5 — Infrastructure as Code as Compliance Evidence (AWS)](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/02_05_iac_as_compliance_evidence.md)
+
+- [Lab 3.3 — Writing Compliance Policies in Rego (GCP)](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/03_03_writing_compliance_policies_rego.md)
