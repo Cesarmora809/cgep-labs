@@ -42,7 +42,8 @@ This repository documents implementation steps, technical challenges, troublesho
 | 2.4 | Terraform Modules for Compliance — GCP | Completed |
 | 2.5 | IaC as Compliance Evidence — AWS | Completed |
 | 3.3 | Writing Compliance Policies in Rego — GCP | Completed |
-| 3.4 | Integrating Policy as Code (PaC) with Terraform | In Progress |
+| 3.4 | Integrating Policy as Code (PaC) with Terraform | Completed |
+| 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Not Started |
 
 ---
 
@@ -247,22 +248,120 @@ This repository documents implementation steps, technical challenges, troublesho
 
 ### Lab 3.4 — Integrating Policy as Code with Terraform
 
-**Status:** In Progress
+**Cloud Platform:** Amazon Web Services (AWS)
 
-**Objective:** Integrate Policy as Code (PaC) into Terraform workflows to automatically evaluate infrastructure configurations against security and compliance requirements before deployment.
+**Status:** Completed
 
-**Planned Learning Outcomes:**
-- Understand how Policy as Code integrates with Terraform.
-- Execute automated compliance checks against infrastructure plans.
-- Validate policy evaluation results.
-- Explore how automated checks can support deployment controls.
-- Capture supporting compliance testing evidence.
-- Document implementation challenges, remediation, and lessons learned.
+**Objective:** Integrate Policy as Code (PaC) with Terraform using Open Policy Agent (OPA), Rego, and Conftest to automatically evaluate infrastructure security configurations before deployment.
+
+**Implementation:**
+- Reused the compliant AWS S3 Terraform configuration from Lab 2.3.
+- Extended the Rego policy library developed in Lab 3.3.
+- Created three AWS-specific compliance policies.
+- Generated Terraform execution plans and exported them to JSON.
+- Integrated Conftest to evaluate AWS Terraform plans.
+- Implemented a reusable automated policy gate using Bash.
+- Tested compliant and intentionally noncompliant configurations.
+- Generated machine-readable JSON compliance evidence.
+- Validated policy syntax and regression tests.
+- Published the policy definitions, automation script, and evidence to GitHub.
+
+**Security Controls Implemented:**
+
+| Control | Requirement | Severity |
+|---|---|---|
+| NIST SC-28 | Require explicit S3 server-side encryption configuration | High |
+| NIST AC-3 | Require all four S3 Public Access Block settings | Critical |
+| NIST CM-6 | Enforce standardized required AWS resource tags | Medium |
+
+**Automated Validation Results:**
+- 8 of 8 existing OPA regression tests passed.
+- All 3 AWS-specific Conftest policy evaluations passed against the compliant Terraform plan.
+- Generated a compliant Terraform plan containing 11 planned resources.
+- Created an intentionally noncompliant Terraform configuration by removing the primary S3 bucket's encryption configuration.
+- Generated a valid noncompliant Terraform plan containing 10 planned resources.
+- Confirmed Conftest detected the SC-28 violation.
+- Verified the negative test returned exit code 1.
+- Confirmed the automated policy gate returned PASS for the compliant configuration and FAIL for the noncompliant configuration.
+- Successfully generated JSON evidence for both test scenarios.
+- No AWS infrastructure was deployed during this lab.
+
+**Technical Challenges and Troubleshooting:**
+- Installed Conftest and configured Git Bash to recognize the executable.
+- Resolved Windows ZIP extraction and PATH configuration issues.
+- Corrected AWS credential availability for Terraform.
+- Updated the temporary negative-test workspace to remove an output reference to the intentionally deleted resource.
+- Resolved Terraform plan generation errors.
+- Verified that Conftest failures were caused by security policy violations rather than configuration or JSON parsing errors.
+- Addressed GitHub synchronization issues while preserving previous lab work.
+
+**Key Learning Outcomes:**
+- Translating security and compliance requirements into executable policies.
+- Integrating OPA, Rego, Conftest, and Terraform.
+- Understanding the importance of cloud-specific policy coverage.
+- Implementing automated positive and negative security control tests.
+- Using policy evaluation exit codes to support deployment decisions.
+- Building reusable compliance validation scripts.
+- Generating structured audit evidence automatically.
+- Understanding how Policy as Code can support preventive controls in CI/CD pipelines.
+
+**GRC and Business Value:**
+- Reduces repetitive manual infrastructure compliance reviews.
+- Detects defined security configuration gaps before deployment.
+- Supports consistent enforcement of technical security requirements.
+- Produces repeatable evidence for compliance assessments.
+- Improves control testing efficiency and audit readiness.
+- Provides a foundation for continuous compliance validation.
+- Supports risk-based cloud governance and infrastructure security assurance.
+
+**Source Code:**
+- [AWS SC-28 Encryption Policy](policies/sc28_encryption_aws.rego)
+- [AWS AC-3 Public Access Policy](policies/ac3_no_public_aws.rego)
+- [AWS CM-6 Required Tags Policy](policies/cm6_required_tags_aws.rego)
+- [Automated Policy Gate Script](scripts/policy-gate.sh)
+- [Policy Documentation](policies/README.md)
+
+**Compliance Evidence:**
+- [Compliant Policy Test Results](evidence/lab-3-4/conftest-pass.json)
+- [Noncompliant Policy Test Results](evidence/lab-3-4/conftest-fail.json)
 
 **Official Lab Guide:**
 [Lab 3.4 — Integrating PaC with Terraform](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/03_04_integrating_pac_with_terraform.md)
 
-**Current Status:** In Progress — implementation, testing, and evidence collection pending.
+**Current Status:** Completed — AWS-specific policies implemented, automated compliance gate validated, positive and negative testing completed, and supporting JSON evidence generated.
+
+**Note:** These tests validate selected security configuration requirements and do not independently establish full compliance with NIST SP 800-53.
+
+---
+
+### Lab 4.3 — Building a GRC Evidence Pipeline
+
+**Cloud Platform:** AWS and GitHub Actions
+
+**Status:** Not Started — Next Lab
+
+**Objective:** Extend the Policy as Code implementation from Lab 3.4 into a GitHub Actions workflow that automatically evaluates Terraform changes, performs security scanning, and captures compliance evidence.
+
+**Planned Implementation:**
+- Configure AWS authentication through OpenID Connect (OIDC).
+- Integrate Terraform execution plans with GitHub Actions.
+- Execute Conftest compliance policy checks automatically.
+- Add Terraform security scanning using tfsec.
+- Generate and retain structured evidence artifacts from pipeline executions.
+- Test compliant and noncompliant pull request scenarios.
+- Validate automated policy enforcement and evidence generation.
+
+**Expected GRC and Business Value:**
+- Automate compliance checks during infrastructure changes.
+- Reduce reliance on manual policy testing.
+- Support preventive controls within development workflows.
+- Produce consistent, traceable compliance evidence.
+- Improve audit readiness and remediation efficiency.
+
+**Official Lab Guide:**
+[Lab 4.3 — Building a GRC Evidence Pipeline (AWS + GitHub Actions)](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/04_03_grc_evidence_pipeline.md)
+
+**Current Status:** Not Started — Next scheduled GRC Engineering Club lab.
 
 ---
 
