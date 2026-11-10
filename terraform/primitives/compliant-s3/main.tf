@@ -69,6 +69,7 @@ resource "aws_s3_bucket_versioning" "primary" {
 }
 
 # AC-3: Block public access
+# Lab 4.3 green test: All four public-access-block settings remain enabled.
 resource "aws_s3_bucket_public_access_block" "primary" {
   bucket                  = aws_s3_bucket.primary.id
   block_public_acls       = true
