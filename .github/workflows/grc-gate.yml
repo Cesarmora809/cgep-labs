@@ -1,0 +1,134 @@
+name: GRC Evidence Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  TF_DIR: terraform/primitives/compliant-s3
+
+jobs:
+  static-checks:
+    name: Terraform and security checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.0
+          terraform_wrapper: false
+
+      - name: Validate Terraform
+        run: |
+          terraform -chdir="$TF_DIR" fmt -check
+          terraform -chdir="$TF_DIR" init -backend=false -input=false
+          terraform -chdir="$TF_DIR" validate
+
+      - name: Install tfsec
+        run: |
+          curl -fsSL \
+            https://github.com/aquasecurity/tfsec/releases/download/v1.28.14/tfsec-linux-amd64 \
+            -o /usr/local/bin/tfsec
+          chmod +x /usr/local/bin/tfsec
+
+      - name: Scan Terraform
+        run: |
+          mkdir -p evidence/lab-4-3
+          tfsec "$TF_DIR" --format sarif \
+            --out evidence/lab-4-3/tfsec.sarif || true
+          tfsec "$TF_DIR" --minimum-severity HIGH
+
+      - name: Upload scanner evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-evidence-${{ github.run_id }}
+          path: evidence/lab-4-3/tfsec.sarif
+          if-no-files-found: warn
+          retention-days: 30
+
+  aws-evidence:
+    name: AWS OIDC and Rego evidence
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout trusted main branch
+        uses: actions/checkout@v4
+
+      - name: Configure temporary AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: cgep-lab43
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.0
+          terraform_wrapper: false
+
+      - name: Install Conftest
+        run: |
+          curl -fsSL \
+            https://github.com/open-policy-agent/conftest/releases/download/v0.71.1/conftest_0.71.1_Linux_x86_64.tar.gz \
+            | sudo tar -xz -C /usr/local/bin conftest
+          conftest --version
+
+      - name: Generate Terraform plan
+        run: |
+          terraform -chdir="$TF_DIR" init -input=false
+          terraform -chdir="$TF_DIR" validate
+          terraform -chdir="$TF_DIR" plan \
+            -refresh=false \
+            -input=false \
+            -out=tfplan \
+            -var="project_name=cgep-lab" \
+            -var="environment=dev"
+          terraform -chdir="$TF_DIR" show -json tfplan > "$TF_DIR/plan.json"
+
+      - name: Evaluate Rego compliance policies
+        run: |
+          mkdir -p evidence/lab-4-3
+          FAILED=0
+          for NS in \
+            compliance.sc28_aws \
+            compliance.ac3_aws \
+            compliance.cm6_aws
+          do
+            echo "Evaluating $NS"
+            conftest test \
+              --policy policies \
+              --namespace "$NS" \
+              --output json \
+              "$TF_DIR/plan.json" \
+              > "evidence/lab-4-3/${NS}.json" || FAILED=1
+          done
+          exit "$FAILED"
+
+      - name: Upload compliance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grc-evidence-${{ github.run_id }}
+          path: evidence/lab-4-3/*.json
+          if-no-files-found: warn
+          retention-days: 30
