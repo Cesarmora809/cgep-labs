@@ -46,6 +46,9 @@ resource "aws_s3_bucket" "primary" {
 }
 
 # SC-28: Encrypt stored data
+# Lab 4.3 exception: SSE-S3 accepted for this lab only.
+# Review customer-managed KMS requirement by 2026-12-31.
+#tfsec:ignore:aws-s3-encryption-customer-key:exp:2026-12-31
 resource "aws_s3_bucket_server_side_encryption_configuration" "primary" {
   bucket = aws_s3_bucket.primary.id
 
