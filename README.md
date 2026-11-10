@@ -1,4 +1,3 @@
-
 # GRC Engineering Club — Hands-On Labs
 
 Hands-on learning repository documenting my journey through the GRC Engineering Club, focused on building, enforcing, testing, and verifying security controls through infrastructure automation.
@@ -28,6 +27,10 @@ This repository documents implementation steps, technical challenges, troublesho
 | Google Cloud Platform | Cloud infrastructure and security controls |
 | Open Policy Agent (OPA) | Automated policy evaluation |
 | Rego | Policy as Code language |
+| Conftest | Terraform policy compliance testing |
+| tfsec | Terraform security configuration scanning |
+| GitHub Actions | Automated CI/CD compliance validation |
+| GitHub OIDC | Temporary AWS authentication for CI workflows |
 | Git and GitHub | Version control and documentation |
 | Git Bash | Command-line environment |
 | Visual Studio Code | Development environment |
@@ -43,9 +46,9 @@ This repository documents implementation steps, technical challenges, troublesho
 | 2.5 | IaC as Compliance Evidence — AWS | Completed |
 | 3.3 | Writing Compliance Policies in Rego — GCP | Completed |
 | 3.4 | Integrating Policy as Code with Terraform | Completed |
-| 4.3 | GRC Evidence Pipeline | Completed |
+| 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
+| 4.4 | Evidence Management and Chain of Custody — AWS | In Progress |
 
-| 4.4 | Evidence Management and Chain of Custody | In Progress |
 ---
 
 ## Lab Documentation
@@ -337,32 +340,127 @@ This repository documents implementation steps, technical challenges, troublesho
 
 ### Lab 4.3 — Building a GRC Evidence Pipeline
 
-**Cloud Platform:** AWS and GitHub Actions
+**Cloud Platform:** Amazon Web Services (AWS) and GitHub Actions
 
-**Status:** Not Started — Next Lab
+**Status:** Completed
 
 **Objective:** Extend the Policy as Code implementation from Lab 3.4 into a GitHub Actions workflow that automatically evaluates Terraform changes, performs security scanning, and captures compliance evidence.
 
-**Planned Implementation:**
-- Configure AWS authentication through OpenID Connect (OIDC).
-- Integrate Terraform execution plans with GitHub Actions.
-- Execute Conftest compliance policy checks automatically.
-- Add Terraform security scanning using tfsec.
-- Generate and retain structured evidence artifacts from pipeline executions.
-- Test compliant and noncompliant pull request scenarios.
-- Validate automated policy enforcement and evidence generation.
+**Implementation:**
+- Configured AWS authentication through OpenID Connect (OIDC).
+- Created an AWS IAM role for GitHub Actions with repository-specific trust conditions.
+- Configured the GitHub repository variable `AWS_ROLE_ARN`.
+- Integrated Terraform execution planning into GitHub Actions.
+- Automated security policy evaluation using Conftest and AWS-specific Rego policies.
+- Integrated tfsec to identify Terraform security configuration findings.
+- Generated and retained evidence artifacts from GitHub Actions workflow executions.
+- Configured GitHub branch protection to require successful security checks before merging into `main`.
+- Tested intentionally noncompliant and compliant pull request scenarios.
+- Verified security check results, evidence generation, and pull request outcomes.
 
-**Expected GRC and Business Value:**
-- Automate compliance checks during infrastructure changes.
-- Reduce reliance on manual policy testing.
-- Support preventive controls within development workflows.
-- Produce consistent, traceable compliance evidence.
-- Improve audit readiness and remediation efficiency.
+**Security Controls Evaluated:**
+
+| Control | Requirement | Validation |
+|---|---|---|
+| NIST SC-28 | Require explicit S3 server-side encryption configuration | Conftest / Rego |
+| NIST AC-3 | Require all four S3 Public Access Block settings | Conftest / Rego and tfsec |
+| NIST CM-6 | Enforce standardized required AWS resource tags | Conftest / Rego |
+
+**Automated Validation Results:**
+- AWS OIDC authentication completed successfully through GitHub Actions.
+- Terraform execution plans generated successfully in the workflow.
+- Conftest successfully evaluated the AWS-specific compliance policies.
+- tfsec security scanning executed successfully against compliant Terraform configurations.
+- All 11 OPA unit tests passed during additional policy testing.
+- Generated and verified all four required evidence files:
+  - `plan.json`
+  - `plan.txt`
+  - `conftest-results.json`
+  - `tfsec.sarif`
+- Red Pull Request #6 intentionally violated AC-3 by disabling an S3 Public Access Block setting.
+- Confirmed the Red PR failed both Conftest and tfsec security validation.
+- Green Pull Request #7 retained compliant security configurations and passed the required security check.
+- Successfully merged the Green PR into `main`.
+- Configured GitHub branch protection requiring the `grc-gate` check before future merges.
+- Closed the intentionally failing pull request and deleted the remote test branches.
+
+**Technical Challenges and Troubleshooting:**
+- Configured AWS IAM permissions and GitHub OIDC trust conditions.
+- Resolved authentication and infrastructure planning issues during workflow setup.
+- Corrected security findings affecting the Terraform configuration.
+- Updated the workflow to execute the required Lab 4.3 evidence pipeline.
+- Validated AWS-specific policy failures through intentional negative testing.
+- Verified the exact GitHub Actions status check required for branch protection.
+- Preserved existing lab files and previous documentation while managing Git branches.
+- Confirmed the workflow and protected branch configuration through GitHub CLI.
+
+**Key Learning Outcomes:**
+- Integrating infrastructure security validation into CI/CD workflows.
+- Configuring temporary AWS authentication through GitHub OIDC.
+- Running Terraform, Conftest, and tfsec through GitHub Actions.
+- Evaluating infrastructure changes against defined security requirements.
+- Demonstrating failing and passing security control checks.
+- Using GitHub branch protection to enforce successful checks before merging.
+- Generating repeatable, machine-readable evidence for compliance assessments.
+- Understanding how automated policy evaluation can support preventive controls.
+
+**GRC and Business Value:**
+- Reduces manual infrastructure compliance validation.
+- Detects security configuration violations during pull request reviews.
+- Supports consistent security control enforcement.
+- Helps prevent noncompliant infrastructure changes from being merged when required checks are enforced.
+- Generates repeatable evidence supporting internal audits and compliance reviews.
+- Improves traceability between infrastructure changes, security checks, and validation results.
+- Establishes a foundation for automated evidence management and chain-of-custody processes.
+
+**Source Code:**
+- [GitHub Actions GRC Evidence Pipeline](.github/workflows/grc-gate.yml)
+- [AWS OIDC Trust Configuration](terraform/primitives/oidc-trust/)
+- [AWS Terraform Configuration](terraform/primitives/compliant-s3/)
+- [AWS Rego Compliance Policies](policies/)
+
+**Compliance Evidence:**
+- [Red Pull Request #6 — Failed Security Validation](https://github.com/Cesarmora809/cgep-labs/pull/6)
+- [Red GitHub Actions Run — Security Violation Detected](https://github.com/Cesarmora809/cgep-labs/actions/runs/42733050114)
+- [Green Pull Request #7 — Successful Security Validation](https://github.com/Cesarmora809/cgep-labs/pull/7)
+- [Successful Evidence Pipeline Run](https://github.com/Cesarmora809/cgep-labs/actions/runs/42732687452)
 
 **Official Lab Guide:**
 [Lab 4.3 — Building a GRC Evidence Pipeline (AWS + GitHub Actions)](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/04_03_grc_evidence_pipeline.md)
 
-**Current Status:** Not Started — Next scheduled GRC Engineering Club lab.
+**Current Status:** Completed — AWS OIDC authentication configured, GitHub Actions evidence pipeline operational, Conftest and tfsec validation successful, four required evidence files verified, red and green pull request demonstrations completed, branch protection enabled, and test branch cleanup completed.
+
+**Note:** Security validation demonstrates the selected Terraform configuration controls under laboratory conditions. It does not independently establish comprehensive compliance with NIST SP 800-53 or prove the deployed state of AWS infrastructure.
+
+---
+
+### Lab 4.4 — Evidence Management and Chain of Custody
+
+**Cloud Platform:** Amazon Web Services (AWS) and GitHub Actions
+
+**Status:** In Progress
+
+**Objective:** Build on the infrastructure compliance evidence workflows developed in Labs 2.5 and 4.3 to understand evidence integrity, cryptographic verification, and chain-of-custody practices for automated GRC engineering processes.
+
+**Planned Implementation:**
+- Follow the official Lab 4.4 evidence management and chain-of-custody instructions.
+- Build upon the evidence collection and retention concepts introduced in Lab 2.5.
+- Use the compliance evidence generated through the Lab 4.3 pipeline.
+- Explore cryptographic signing and verification of evidence artifacts.
+- Validate evidence integrity and document chain-of-custody results.
+- Record the required implementation activities, verification results, and troubleshooting.
+
+**Expected GRC and Business Value:**
+- Improve confidence in the integrity of collected compliance evidence.
+- Support traceability and verification of evidence artifacts.
+- Reduce the risk of undetected evidence modification.
+- Strengthen audit readiness through repeatable evidence verification.
+- Improve the reliability of technical evidence used in security assurance and compliance activities.
+
+**Official Lab Guide:**
+[Lab 4.4 — Evidence Management and Chain of Custody (AWS)](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/04_04_evidence_chain_of_custody.md)
+
+**Current Status:** In Progress — Lab 4.4 identified as the next GRC Engineering Club exercise. Implementation and evidence verification are pending.
 
 ---
 
@@ -378,6 +476,7 @@ The repository is organized by infrastructure configurations, reusable modules, 
 - `scripts/` — Automation and evidence collection scripts.
 - `evidence/` — Lab-specific supporting evidence and verification records.
 - `guides/` — Lab instructions and supporting guides, where included.
+- `.github/workflows/` — GitHub Actions workflows for automated security and compliance checks.
 
 Each completed lab includes relevant source code, validation results, documentation, and available supporting evidence.
 
@@ -425,6 +524,6 @@ The long-term goal is to evaluate how these capabilities can be implemented resp
 - [Rego Policy Language](https://www.openpolicyagent.org/docs/policy-language)
 - [AWS Documentation](https://docs.aws.amazon.com/)
 - [Google Cloud Documentation](https://cloud.google.com/docs)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
 - [NIST SP 800-53 Security and Privacy Controls](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)
-
