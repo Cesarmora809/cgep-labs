@@ -49,6 +49,7 @@ resource "aws_iam_role" "grc_gate" {
         StringLike = {
           "token.actions.githubusercontent.com:sub" = [
             "repo:${var.github_org}@294329865/${var.github_repo}@1435140142:ref:refs/heads/main",
+            "repo:${var.github_org}@294329865/${var.github_repo}@1435140142:pull_request",
           ]
         }
       }

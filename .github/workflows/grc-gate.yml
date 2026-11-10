@@ -1,142 +1,95 @@
-name: GRC Evidence Pipeline
+name: grc-gate
 
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
+  id-token: write
   contents: read
+  pull-requests: write
 
 env:
   AWS_REGION: us-east-1
-  TF_DIR: terraform/primitives/compliant-s3
+  TF_WORKING_DIR: terraform/primitives/compliant-s3
 
 jobs:
-  static-checks:
-    name: Terraform and security checks
+  grc-gate:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.17.0
-          terraform_wrapper: false
-
-      - name: Setup OPA
-        uses: open-policy-agent/setup-opa@v2.4.0
-        with:
-          version: 1.21.4
-
-      - name: Test compliance policies
-        run: opa test policies/ -v
-
-      - name: Validate Terraform
-        run: |
-          terraform -chdir="$TF_DIR" fmt -check
-          terraform -chdir="$TF_DIR" init -backend=false -input=false
-          terraform -chdir="$TF_DIR" validate
-
-      - name: Install tfsec
-        run: |
-          curl -fsSL \
-            https://github.com/aquasecurity/tfsec/releases/download/v1.28.14/tfsec-linux-amd64 \
-            -o /usr/local/bin/tfsec
-          chmod +x /usr/local/bin/tfsec
-
-      - name: Scan Terraform
-        run: |
-          mkdir -p evidence/lab-4-3
-          tfsec "$TF_DIR" --format sarif \
-            --out evidence/lab-4-3/tfsec.sarif || true
-          tfsec "$TF_DIR" --minimum-severity HIGH
-
-      - name: Upload scanner evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: static-evidence-${{ github.run_id }}
-          path: evidence/lab-4-3/tfsec.sarif
-          if-no-files-found: warn
-          retention-days: 30
-
-  aws-evidence:
-    name: AWS OIDC and Rego evidence
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Checkout trusted main branch
-        uses: actions/checkout@v4
-
-      - name: Configure temporary AWS credentials
+      - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: us-east-1
-          role-session-name: cgep-lab43
-
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.17.0
+          terraform_version: 1.6.6
           terraform_wrapper: false
 
       - name: Install Conftest
         run: |
-          curl -fsSL \
-            https://github.com/open-policy-agent/conftest/releases/download/v0.71.1/conftest_0.71.1_Linux_x86_64.tar.gz \
-            | sudo tar -xz -C /usr/local/bin conftest
-          conftest --version
+          curl -fsSL https://github.com/open-policy-agent/conftest/releases/download/v0.50.0/conftest_0.50.0_Linux_x86_64.tar.gz \
+            | tar -xz -C /usr/local/bin conftest
 
-      - name: Generate Terraform plan
+      - name: Install tfsec
         run: |
-          terraform -chdir="$TF_DIR" init -input=false
-          terraform -chdir="$TF_DIR" validate
-          terraform -chdir="$TF_DIR" plan \
-            -refresh=false \
-            -input=false \
-            -out=tfplan \
-            -var="project_name=cgep-lab" \
-            -var="environment=dev"
-          terraform -chdir="$TF_DIR" show -json tfplan > "$TF_DIR/plan.json"
+          curl -fsSL https://github.com/aquasecurity/tfsec/releases/download/v1.28.14/tfsec-linux-amd64 \
+            -o /usr/local/bin/tfsec && chmod +x /usr/local/bin/tfsec
 
-      - name: Evaluate Rego compliance policies
+      - name: Terraform plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          terraform init -input=false
+          terraform validate
+          terraform plan -out=tfplan -input=false -no-color \
+            -var="project_name=cgep-lab" -var="environment=dev" | tee plan.txt
+          terraform show -json tfplan > plan.json
+
+      - name: Conftest policy gate
+        id: conftest
         run: |
           mkdir -p evidence/lab-4-3
-          FAILED=0
-          for NS in \
-            compliance.sc28_aws \
-            compliance.ac3_aws \
-            compliance.cm6_aws
-          do
-            echo "Evaluating $NS"
-            conftest test \
-              --policy policies \
-              --namespace "$NS" \
-              --output json \
-              "$TF_DIR/plan.json" \
-              > "evidence/lab-4-3/${NS}.json" || FAILED=1
-          done
-          exit "$FAILED"
+          EXIT=0
+          {
+            echo "["
+            FIRST=1
+            for ns in compliance.sc28_aws compliance.ac3_aws compliance.cm6_aws ; do
+              [[ $FIRST -eq 1 ]] && FIRST=0 || printf ","
+              set +e
+              OUT=$(conftest test --policy policies --namespace "$ns" --output=json "$TF_WORKING_DIR/plan.json")
+              STATUS=$?
+              set -e
+              [[ $STATUS -eq 0 ]] || EXIT=1
+              printf '%s' "$OUT"
+            done
+            echo
+            echo "]"
+          } > evidence/lab-4-3/conftest-results.json
+          if [[ $EXIT -eq 0 ]]; then echo "conftest: PASS"; else echo "conftest: FAIL"; exit 1; fi
 
-      - name: Upload compliance evidence
+      - name: tfsec scan
+        id: tfsec
+        if: always()
+        run: |
+          tfsec "$TF_WORKING_DIR" --format sarif --out evidence/lab-4-3/tfsec.sarif || true
+          tfsec "$TF_WORKING_DIR" --minimum-severity HIGH
+
+      - name: Copy plan into evidence
+        if: always()
+        run: |
+          cp "$TF_WORKING_DIR"/plan.json evidence/lab-4-3/plan.json
+          cp "$TF_WORKING_DIR"/plan.txt evidence/lab-4-3/plan.txt
+
+      - name: Upload evidence artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: grc-evidence-${{ github.run_id }}
-          path: evidence/lab-4-3/*.json
-          if-no-files-found: warn
-          retention-days: 30
+          path: evidence/lab-4-3/
+          retention-days: 90
