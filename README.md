@@ -42,9 +42,10 @@ This repository documents implementation steps, technical challenges, troublesho
 | 2.4 | Terraform Modules for Compliance — GCP | Completed |
 | 2.5 | IaC as Compliance Evidence — AWS | Completed |
 | 3.3 | Writing Compliance Policies in Rego — GCP | Completed |
-| 3.4 | Integrating Policy as Code (PaC) with Terraform | Completed |
-| 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Not Started |
+| 3.4 | Integrating Policy as Code with Terraform | Completed |
+| 4.3 | GRC Evidence Pipeline | Completed |
 
+| 4.4 | Evidence Management and Chain of Custody | In Progress |
 ---
 
 ## Lab Documentation
