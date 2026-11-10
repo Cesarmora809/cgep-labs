@@ -82,6 +82,15 @@ resource "aws_s3_bucket" "log" {
   bucket = local.log_name
 }
 
+# Lab 4.3: Enable versioning for audit log recovery
+resource "aws_s3_bucket_versioning" "log" {
+  bucket = aws_s3_bucket.log.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_ownership_controls" "log" {
   bucket = aws_s3_bucket.log.id
 
