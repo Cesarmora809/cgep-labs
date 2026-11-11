@@ -47,7 +47,8 @@ This repository documents implementation steps, technical challenges, troublesho
 | 3.3 | Writing Compliance Policies in Rego — GCP | Completed |
 | 3.4 | Integrating Policy as Code with Terraform | Completed |
 | 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
-| 4.4 | Evidence Management and Chain of Custody — AWS | In Progress |
+| 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
+| 5.2 | AWS Security Services Baseline | Next Up |
 
 ---
 
@@ -436,31 +437,69 @@ This repository documents implementation steps, technical challenges, troublesho
 
 ### Lab 4.4 — Evidence Management and Chain of Custody
 
-**Cloud Platform:** Amazon Web Services (AWS) and GitHub Actions
+**Cloud Platform:** AWS, GitHub Actions, and Sigstore
 
-**Status:** In Progress
+**Status:** Completed
 
-**Objective:** Build on the infrastructure compliance evidence workflows developed in Labs 2.5 and 4.3 to understand evidence integrity, cryptographic verification, and chain-of-custody practices for automated GRC engineering processes.
+**Objective:** Connect the Lab 4.3 evidence pipeline to the Lab 2.5 S3 evidence vault and provide verifiable authenticity, integrity, timeliness, and preservation of audit evidence.
 
-**Planned Implementation:**
-- Follow the official Lab 4.4 evidence management and chain-of-custody instructions.
-- Build upon the evidence collection and retention concepts introduced in Lab 2.5.
-- Use the compliance evidence generated through the Lab 4.3 pipeline.
-- Explore cryptographic signing and verification of evidence artifacts.
-- Validate evidence integrity and document chain-of-custody results.
-- Record the required implementation activities, verification results, and troubleshooting.
+**Implementation:**
+- Redeployed the AWS S3 evidence vault with encryption, versioning, public-access blocking, and one-day GOVERNANCE Object Lock retention.
+- Configured the GitHub Actions `EVIDENCE_VAULT` variable and scoped IAM role access to the vault.
+- Extended the GRC pipeline to package Terraform/Conftest/tfsec evidence, calculate SHA-256, sign with Cosign using GitHub OIDC, and upload signed bundles and receipts to S3.
+- Created `scripts/verify-evidence.sh` to check evidence hashes, Cosign signatures, and object retention.
+- Recorded evidence in `evidence/lab-4-4/receipt.json` and the portfolio `WRITEUP.md`.
 
-**Expected GRC and Business Value:**
-- Improve confidence in the integrity of collected compliance evidence.
-- Support traceability and verification of evidence artifacts.
-- Reduce the risk of undetected evidence modification.
-- Strengthen audit readiness through repeatable evidence verification.
-- Improve the reliability of technical evidence used in security assurance and compliance activities.
+**Verification Results:**
+- GitHub Actions run [43110568117](https://github.com/Cesarmora809/cgep-labs/actions/runs/43110568117) succeeded.
+- Local verification returned `Verified OK` and `CHAIN INTACT for run 43110568117`.
+- The SHA-256, Cosign, and S3 retention checks passed.
+- Tamper demonstration: appending "junk" to a downloaded local copy changed its SHA-256 hash. The modified copy was not separately run through the full verification script.
+- [Pull Request #10](https://github.com/Cesarmora809/cgep-labs/pull/10) merged into `main`.
+
+**Four Chain-of-Custody Properties:**
+
+| Property | Verification Evidence |
+|---|---|
+| Authenticity | Cosign signature bundle and GitHub OIDC issuer verification |
+| Integrity | SHA-256 sidecar and calculated bundle hash |
+| Timeliness | Sigstore signing bundle / Rekor transparency record |
+| Preservation | S3 Object Lock and per-object retention check |
+
+**Source Code and Evidence:**
+- [GitHub Actions GRC Workflow](.github/workflows/grc-gate.yml)
+- [Evidence Verification Script](scripts/verify-evidence.sh)
+- [Lab 4.4 Receipt](evidence/lab-4-4/receipt.json)
+- [Chain-of-Custody Portfolio Writeup](WRITEUP.md)
 
 **Official Lab Guide:**
 [Lab 4.4 — Evidence Management and Chain of Custody (AWS)](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/04_04_evidence_chain_of_custody.md)
 
-**Current Status:** In Progress — Lab 4.4 identified as the next GRC Engineering Club exercise. Implementation and evidence verification are pending.
+**Current Status:** Completed — evidence signing, vault upload, independent verification, receipt and writeup, and PR merge. AWS resource teardown is a separate post-lab activity.
+
+---
+
+### Lab 5.2 — AWS Security Services Baseline
+
+**Cloud Platform:** AWS
+
+**Status:** Next Up — Not Started
+
+**Objective:** Build an AWS-native continuous security evidence baseline using CloudTrail, Security Hub, and optional AWS Config.
+
+**Planned Implementation:**
+- Follow the official Lab 5.2 guide in its prescribed order.
+- Configure the required CloudTrail and Security Hub baseline.
+- Evaluate the optional AWS Config deployment as the guide directs.
+- Capture required security findings and verification evidence.
+- Complete the documented cleanup steps to control recurring AWS charges.
+
+**Cost Note:** Unlike earlier labs, AWS security services can generate ongoing charges while enabled.
+
+**Official Lab Guide:**
+[Lab 5.2 — AWS Security Services Baseline](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/05_02_aws_security_services.md)
+
+**Current Status:** Not Started — next planned lab.
 
 ---
 
