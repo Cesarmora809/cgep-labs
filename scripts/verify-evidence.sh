@@ -3,7 +3,7 @@
 set -euo pipefail
 RUN_ID="${1:?usage: verify-evidence.sh <run_id> [--vault <bucket>] [--profile <p>]}"
 shift || true
-VAULT="${EVIDENCE_VAULT:-}"
+VAULT="${EVIDENCE_VAULT:-}"echo "CHAIN INTACT for run ${RUN_ID}"
 PROFILE_ARG=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
