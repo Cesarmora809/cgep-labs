@@ -50,8 +50,27 @@ Terraform state, binary plans, and the raw
 evidence bundle because they may contain
 sensitive infrastructure information.
 
-## Remaining Activities
 
-- Complete AWS resource cleanup.
-- Remove temporary elevated IAM permissions.
-- Update README with final cleanup status.
+## AWS Cleanup Verification
+
+**Date:** November 2, 2026
+
+| Verification | Result |
+|---|---|
+| Lab 2.5 evidence vault | Deleted |
+| Lab 2.3 data bucket | Deleted |
+| Lab 2.3 logging bucket | Deleted |
+| AWS CLI bucket listing | Empty |
+| Lab 2.5 Terraform state | Empty |
+| Lab 2.3 Terraform state | Empty |
+
+**Assessment:** AWS resource cleanup completed and verified.
+
+The S3 upload receipt remains as a historical record,
+but the deleted S3 evidence objects are no longer
+retrievable from AWS.
+
+## Outstanding Administrative Items
+
+- Confirm removal of temporary elevated IAM permissions.
+- Independent Cosign signature verification was not performed.

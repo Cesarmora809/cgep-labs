@@ -185,9 +185,7 @@ rebased the local commit, and pushed successfully.
 **Issue:** An initial version-deletion command
 returned `Invalid version id specified`.
 
-**Status:** Cleanup is pending. Object versions,
-retention restrictions, and bucket policy must
-be handled before infrastructure destruction.
+**Resolution:** Removed all three lab S3 buckets through the AWS Console, then reconciled both Terraform workspaces. AWS CLI confirmed zero buckets and both Terraform state listings were empty.
 
 ## 9. GRC and Audit Perspective
 
@@ -233,7 +231,7 @@ contain sensitive infrastructure information.
 **Object Lock negative testing: Passed**  
 **Optional digital signing: Completed**  
 **Independent signature verification: Not performed**  
-**AWS resource cleanup: Pending**  
+**AWS resource cleanup: Completed and verified**  
 **Temporary IAM permission removal: Pending**
 
 The project demonstrates a repeatable approach
@@ -243,3 +241,25 @@ technical compliance evidence.
 The remaining operational activities are
 infrastructure cleanup and revocation of
 temporary elevated IAM permissions.
+
+## 12. AWS Cleanup Verification
+
+**Date:** November 2, 2026
+
+All three lab S3 buckets were deleted:
+
+- `cgep-lab-grc-evidence-vault-ec861859`
+- `cgep-lab-dev-data-f8e9ab81`
+- `cgep-lab-dev-logs-f8e9ab81`
+
+The AWS S3 Console displayed zero buckets.
+The AWS CLI returned an empty bucket listing.
+Terraform state for Labs 2.3 and 2.5 was empty.
+
+**Result:** AWS infrastructure cleanup completed.
+
+The evidence receipt remains on GitHub as a historical
+record. The original S3 objects are no longer available.
+
+Temporary elevated IAM permission removal remains
+subject to separate confirmation.
