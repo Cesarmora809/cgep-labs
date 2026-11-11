@@ -48,7 +48,7 @@ This repository documents implementation steps, technical challenges, troublesho
 | 3.4 | Integrating Policy as Code with Terraform | Completed |
 | 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
 | 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
-| 5.2 | AWS Security Services Baseline | Next Up |
+| 5.2 | AWS Security Services Baseline | In Progress |
 
 ---
 
@@ -483,7 +483,7 @@ This repository documents implementation steps, technical challenges, troublesho
 
 **Cloud Platform:** AWS
 
-**Status:** Next Up — Not Started
+**Status:** In Progress
 
 **Objective:** Build an AWS-native continuous security evidence baseline using CloudTrail, Security Hub, and optional AWS Config.
 
@@ -499,7 +499,7 @@ This repository documents implementation steps, technical challenges, troublesho
 **Official Lab Guide:**
 [Lab 5.2 — AWS Security Services Baseline](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/05_02_aws_security_services.md)
 
-**Current Status:** Not Started — next planned lab.
+**Current Status:** In Progress — working through the official Lab 5.2 instructions; implementation and verification are not yet complete.
 
 ---
 
