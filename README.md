@@ -48,7 +48,7 @@ This repository documents implementation steps, technical challenges, troublesho
 | 3.4 | Integrating Policy as Code with Terraform | Completed |
 | 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
 | 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
-| 5.2 | AWS Security Services Baseline | Next Up |
+| 5.2 | AWS Security Services Baseline | In- Progress |
 
 ---
 
