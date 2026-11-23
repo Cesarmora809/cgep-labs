@@ -47,7 +47,8 @@ This repository documents implementation steps, technical challenges, troublesho
 | 3.3 | Writing Compliance Policies in Rego — GCP | Completed |
 | 3.4 | Integrating Policy as Code with Terraform | Completed |
 | 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
-| 4.4 | Evidence Management and Chain of Custody — AWS | In Progress |
+| 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
+| 5.2 | AWS Security Services Baseline | Completed (evidence findings empty) |
 
 ---
 
@@ -527,3 +528,26 @@ The long-term goal is to evaluate how these capabilities can be implemented resp
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
 - [NIST SP 800-53 Security and Privacy Controls](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)
+
+---
+
+### Lab 5.2 — AWS Security Services Baseline
+
+**Cloud Platform:** Amazon Web Services (AWS)
+
+**Status:** Deployment and teardown completed; finding evidence validation remains incomplete.
+
+**Objective:** Use Terraform to provision AWS CloudTrail and Security Hub, verify continuous-monitoring capabilities, capture JSON evidence, and remove temporary paid services after testing.
+
+**Implementation and results:**
+- Deployed and verified a multi-region CloudTrail trail with log-file validation and S3 log storage (`IsLogging: true`).
+- Enabled Security Hub and subscribed to NIST 800-53 Rev. 5 and AWS Foundational Security Best Practices.
+- Captured `evidence/lab-5-2/security-hub-findings.json`; its contents are `{"Findings":[]}`, so the official guide's at-least-one-finding criterion is **not verified**.
+- AWS Config was optional under the guide and was **not deployed**.
+- Committed the baseline and evidence (`3fdb52f`) and completed Terraform cleanup (`9 destroyed`). The baseline is no longer operating.
+
+**Control mappings from the official guide:** CloudTrail AU-2/AU-12/AU-10; Security Hub RA-5/SI-4; optional AWS Config CM-2/CM-6/CM-8.
+
+**Source code and details:** [Lab 5.2 baseline](terraform/baselines/aws/) · [Evidence JSON](evidence/lab-5-2/security-hub-findings.json)
+
+**Official lab guide:** [Lab 5.2 — AWS Security Services Baseline](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/05_02_aws_security_services.md)
