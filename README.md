@@ -48,7 +48,7 @@ This repository documents implementation steps, technical challenges, troublesho
 | 3.4 | Integrating Policy as Code with Terraform | Completed |
 | 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
 | 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
-| 5.2 | AWS Security Services Baseline | Completed (evidence findings empty) |
+| 5.2 | AWS Security Services Baseline | Deployment & cleanup complete; findings evidence incomplete |
 
 ---
 
@@ -535,7 +535,7 @@ The long-term goal is to evaluate how these capabilities can be implemented resp
 
 **Cloud Platform:** Amazon Web Services (AWS)
 
-**Status:** Deployment and teardown completed; finding evidence validation remains incomplete.
+**Status:** Deployment, verification, evidence export and cleanup completed; no non-empty Security Hub findings evidence.
 
 **Objective:** Use Terraform to provision AWS CloudTrail and Security Hub, verify continuous-monitoring capabilities, capture JSON evidence, and remove temporary paid services after testing.
 
@@ -543,8 +543,9 @@ The long-term goal is to evaluate how these capabilities can be implemented resp
 - Deployed and verified a multi-region CloudTrail trail with log-file validation and S3 log storage (`IsLogging: true`).
 - Enabled Security Hub and subscribed to NIST 800-53 Rev. 5 and AWS Foundational Security Best Practices.
 - Captured `evidence/lab-5-2/security-hub-findings.json`; its contents are `{"Findings":[]}`, so the official guide's at-least-one-finding criterion is **not verified**.
-- AWS Config was optional under the guide and was **not deployed**.
-- Committed the baseline and evidence (`3fdb52f`) and completed Terraform cleanup (`9 destroyed`). The baseline is no longer operating.
+- On a second deployment, all three enabled Security Hub standards (CIS, FSBP and NIST 800-53 Rev. 5) reported `INCOMPLETE` with reason `NO_AVAILABLE_CONFIGURATION_RECORDER`; no findings populated.
+- AWS Config was optional under the guide and was **not deployed**. The absent recorder prevented completion of these Security Hub standards.
+- Committed the baseline and evidence (`3fdb52f`). Following a second deployment and unsuccessful findings capture, ran Terraform cleanup again (`Destroy complete! Resources: 9 destroyed`). The Terraform-managed Lab 5.2 baseline is no longer operating.
 
 **Control mappings from the official guide:** CloudTrail AU-2/AU-12/AU-10; Security Hub RA-5/SI-4; optional AWS Config CM-2/CM-6/CM-8.
 
