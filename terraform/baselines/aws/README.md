@@ -1,34 +1,35 @@
+# Lab 5.2 — AWS Security Services Baseline
 
+**Status:** Completed deployment and cleanup; Security Hub finding evidence is empty.
 
-\# Lab 5.2 — AWS Security Services Baseline
+## Objective
+Deploy AWS-native security monitoring with Terraform, verify CloudTrail and Security Hub, export machine-readable evidence, and tear down the temporary resources to limit cost.
 
+## Services and NIST SP 800-53 mappings
 
+| Service | Controls | Deployment |
+|---|---|---|
+| AWS CloudTrail | AU-2 (Event Logging), AU-12 (Audit Record Generation), AU-10 (Non-Repudiation) | Deployed, verified, destroyed |
+| AWS Security Hub | RA-5 (Vulnerability Monitoring and Scanning), SI-4 (System Monitoring) | Deployed, verified, destroyed |
+| AWS Config | CM-2 (Baseline Configuration), CM-6 (Configuration Settings), CM-8 (System Component Inventory) | Optional; not deployed |
 
-\## CloudTrail
+These are the control mappings specified in the official lab guide. Deployment alone does not establish full control compliance.
 
-\- AU-2 — Event Logging
+## Implementation and verification
+- Terraform provisioned a multi-region CloudTrail trail with log-file validation and an S3 logging bucket.
+- CloudTrail verification returned `IsLogging: true`.
+- Security Hub returned its hub ARN and subscribed to NIST 800-53 Rev. 5 and AWS Foundational Security Best Practices.
+- Evidence captured: [security-hub-findings.json](../../../evidence/lab-5-2/security-hub-findings.json).
+- **Evidence limitation:** The captured file contains `{"Findings":[]}`. This is a valid JSON response but **does not meet the guide's requirement to demonstrate at least one finding**. An empty finding result does not prove there are no vulnerabilities or configuration gaps.
+- Config was not deployed because the lab explicitly makes it optional, including for cost and account-permission reasons.
 
-\- AU-12 — Audit Record Generation
+## GitHub and cleanup
+- Implementation and evidence committed as `3fdb52f` on branch `lab-4-3-log-versioning`.
+- Ran `terraform destroy -auto-approve` after the evidence was committed.
+- Terraform reported `Destroy complete! Resources: 9 destroyed.`
+- The Terraform-managed Lab 5.2 baseline was removed. This does not verify billing or unrelated resources elsewhere in the AWS account.
 
-\- AU-10 — Non-Repudiation
+## GRC and audit application
+CloudTrail supports audit activity records; Security Hub centralizes security control findings; AWS Config (if deployed) can record configuration history. The exported JSON can support evidence collection and remediation, but reviewers must validate its contents, dates, scope, and control relevance.
 
-
-
-\## AWS Security Hub
-
-\- RA-5 — Vulnerability Monitoring and Scanning
-
-\- SI-4 — System Monitoring
-
-
-
-\## AWS Config (Optional — Not Deployed)
-
-\- CM-2 — Baseline Configuration
-
-\- CM-6 — Configuration Settings
-
-\- CM-8 — System Component Inventory
-
-
-
+**Official guide:** https://github.com/GRCEngClub/cgep-labs/blob/main/guides/05_02_aws_security_services.md
