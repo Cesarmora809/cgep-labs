@@ -17,4 +17,4 @@ jobs:
           workload_identity_provider: projects/180835757380/locations/global/workloadIdentityPools/github-actions/providers/github
           service_account: cgep-grc-gate-sa@grc-engineering-lab-512901.iam.gserviceaccount.com
 
-      - run: gcloud storage ls
+      - run: gcloud storage buckets list --project=grc-engineering-lab-512901 --format=json
