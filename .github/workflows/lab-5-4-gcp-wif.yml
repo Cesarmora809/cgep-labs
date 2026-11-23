@@ -1,0 +1,20 @@
+name: Lab 5.4 - GCP WIF Authentication
+
+on:
+  workflow_dispatch:
+
+jobs:
+  gcp-auth:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/180835757380/locations/global/workloadIdentityPools/github-actions/providers/github
+          service_account: cgep-grc-gate-sa@grc-engineering-lab-512901.iam.gserviceaccount.com
+
+      - run: gcloud storage ls
