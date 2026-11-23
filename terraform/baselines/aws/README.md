@@ -1,6 +1,6 @@
 # Lab 5.2 — AWS Security Services Baseline
 
-**Status:** Completed deployment and cleanup; Security Hub finding evidence is empty.
+**Status:** Deployment, verification, evidence export, and cleanup completed; required non-empty findings evidence not achieved.
 
 ## Objective
 Deploy AWS-native security monitoring with Terraform, verify CloudTrail and Security Hub, export machine-readable evidence, and tear down the temporary resources to limit cost.
@@ -21,12 +21,14 @@ These are the control mappings specified in the official lab guide. Deployment a
 - Security Hub returned its hub ARN and subscribed to NIST 800-53 Rev. 5 and AWS Foundational Security Best Practices.
 - Evidence captured: [security-hub-findings.json](../../../evidence/lab-5-2/security-hub-findings.json).
 - **Evidence limitation:** The captured file contains `{"Findings":[]}`. This is a valid JSON response but **does not meet the guide's requirement to demonstrate at least one finding**. An empty finding result does not prove there are no vulnerabilities or configuration gaps.
-- Config was not deployed because the lab explicitly makes it optional, including for cost and account-permission reasons.
+- During a second deployment on November 23, 2026, `aws securityhub get-enabled-standards` reported `INCOMPLETE` and `NO_AVAILABLE_CONFIGURATION_RECORDER` for CIS AWS Foundations Benchmark, AWS Foundational Security Best Practices, and NIST 800-53 Rev. 5. No findings were returned during the capture.
+- AWS Config was not deployed because the official guide explicitly makes it optional. Without an available Config recorder, these Security Hub standards could not complete their checks in this run.
 
 ## GitHub and cleanup
 - Implementation and evidence committed as `3fdb52f` on branch `lab-4-3-log-versioning`.
 - Ran `terraform destroy -auto-approve` after the evidence was committed.
-- Terraform reported `Destroy complete! Resources: 9 destroyed.`
+- Re-deployed the nine Lab 5.2 resources to attempt another findings capture; the findings result remained empty because the enabled standards were `INCOMPLETE`.
+- Following the retry, ran `terraform destroy -auto-approve` again and Terraform reported `Destroy complete! Resources: 9 destroyed.`
 - The Terraform-managed Lab 5.2 baseline was removed. This does not verify billing or unrelated resources elsewhere in the AWS account.
 
 ## GRC and audit application
