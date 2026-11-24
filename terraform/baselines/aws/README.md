@@ -1,6 +1,6 @@
 # Lab 5.2 — AWS Security Services Baseline
 
-**Technical status:** Verified on November 23, 2026. **Publication status:** Terraform and documentation prepared; the authentic findings export must still be uploaded from the local machine. **Cleanup:** Pending confirmation; AWS services may still be billable.
+**Technical status:** Verified on November 23, 2026. **Publication status:** Authentic findings JSON published to branch `lab-5-2-final-publication` (commit `f702293`) and verified in GitHub; PR merge pending. **Cleanup:** Pending confirmation; AWS services may still be billable.
 
 ## Objective
 
@@ -59,10 +59,10 @@ After starting Config, Security Hub standards changed from `INCOMPLETE` to `READ
 - Security Hub: hub ARN returned successfully.
 - Standards: NIST 800-53 Rev. 5, AWS FSBP, and CIS AWS Foundations all `READY`.
 - `aws securityhub get-findings --max-results 50` returned **5 findings** in the observed batch.
-- The locally captured `security-hub-findings.json` was **approximately 25 KB**, non-empty.
+- The locally captured `security-hub-findings.json` was **approximately 25 KB**, non-empty, and subsequently published to GitHub.
 - The CLI summary showed an S3 MFA Delete finding with compliance `FAILED` and S3 public-access findings with compliance `PASSED`.
 
-**Evidence:** `evidence/lab-5-2/security-hub-findings.json` was captured locally from the AWS CLI. It must be published as the actual AWS output; an earlier GitHub branch contains an obsolete `{"Findings":[]}` and must not be used as the final evidence. Inspect and redact sensitive resource identifiers before publishing to this public repository as appropriate.
+**Evidence:** [`evidence/lab-5-2/security-hub-findings.json`](../../../evidence/lab-5-2/security-hub-findings.json) contains the actual CLI export of five findings and has been committed to the Lab 5.2 publication branch. An earlier branch contains an obsolete `{"Findings":[]}` and must not be mistaken for the final evidence. **Public repository note:** Findings contain AWS account/resource identifiers; assess the exposure and redact if required by your disclosure policy.
 
 Representative capture command (from `terraform/baselines/aws`):
 
