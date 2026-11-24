@@ -50,7 +50,8 @@ This repository documents implementation steps, technical challenges, troublesho
 | 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
 | 5.2 | AWS Security Services Baseline | Completed |
 | 5.4 | GCP Security Services Baseline | Completed |
-| 6.1 | Introduction to OSCAL | In Progress |
+| 6.1 | Introduction to OSCAL | Completed |
+| Capstone | Capstone Project | In Progress |
 
 ---
 
