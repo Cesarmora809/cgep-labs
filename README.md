@@ -48,7 +48,8 @@ This repository documents implementation steps, technical challenges, troublesho
 | 3.4 | Integrating Policy as Code with Terraform | Completed |
 | 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
 | 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
-| 5.2 | AWS Security Services Baseline | In Progress |
+| 5.2 | AWS Security Services Baseline | Completed |
+| 5.4 | GCP Security Services Baseline | In Progress |
 
 ---
 
@@ -481,25 +482,43 @@ This repository documents implementation steps, technical challenges, troublesho
 
 ### Lab 5.2 — AWS Security Services Baseline
 
-**Cloud Platform:** AWS
+**Cloud Platform:** Amazon Web Services (AWS)
+
+**Status:** Completed — implementation, verification, evidence publication, and resource cleanup confirmed.
+
+**Objective:** Establish AWS-native continuous security evidence collection with a multi-region CloudTrail trail, AWS Security Hub CSPM standards, and AWS Config recording as the prerequisite for control evaluations.
+
+**Implementation and verified results (November 23, 2026):**
+- Terraform deployed nine Lab 5.2 resources, including a multi-region CloudTrail trail, encrypted/private S3 log bucket, Security Hub account, and NIST 800-53 Rev. 5 and AWS Foundational Security Best Practices standard subscriptions.
+- CloudTrail reported `IsLogging: true`; Security Hub returned its hub ARN.
+- Initial subscriptions were `INCOMPLETE` with `NO_AVAILABLE_CONFIGURATION_RECORDER`, and no findings were returned.
+- Confirmed the account was standalone (no AWS Organizations SCP restriction) and had no AWS Config recorder or delivery channel.
+- Manually configured the AWS Config service-linked IAM role, dedicated S3 delivery bucket and bucket policy, `default` recorder, and `default` delivery channel. Recording then reported `true` and `SUCCESS`.
+- NIST 800-53, FSBP, and the automatically enabled CIS benchmark subsequently all reported `READY`.
+- Security Hub returned five findings in the first evidence query. The locally captured `evidence/lab-5-2/security-hub-findings.json` was non-empty (approximately 25 KB). Example findings included an S3 MFA Delete failure and successful S3 public-access checks.
+- Authentic findings JSON was published from the local machine on branch `lab-5-2-final-publication` (commit `f702293`), with five findings verified in GitHub.
+- The AWS Config components were created outside Terraform and therefore cleaned up separately after the evidence was published.
+- Cleanup verified: `terraform destroy` reported 9 destroyed; Terraform state was empty; CloudTrail query returned `[]`; Security Hub confirmed the account was not subscribed; AWS Config recorder and delivery channel returned empty arrays; its dedicated S3 bucket was removed; the service-linked IAM role returned `NoSuchEntity`.
+
+**Control mapping:** AU-2/AU-12/AU-10 (CloudTrail), RA-5/SI-4 (Security Hub), CM-2/CM-6/CM-8 (AWS Config).
+
+**Source code and runbook:** [Lab 5.2 Terraform baseline](terraform/baselines/aws/)
+
+**Official lab guide:** [Lab 5.2 — AWS Security Services Baseline](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/05_02_aws_security_services.md)
+
+**Current status:** Completed — deployed and verified security monitoring, resolved the AWS Config prerequisite, captured five real findings, merged publication PR [#17](https://github.com/Cesarmora809/cgep-labs/pull/17), and verified full cleanup of the Lab 5.2 AWS resources on November 23, 2026.
+
+---
+
+### Lab 5.4 — GCP Security Services Baseline
+
+**Cloud Platform:** Google Cloud Platform (GCP)
 
 **Status:** In Progress
 
-**Objective:** Build an AWS-native continuous security evidence baseline using CloudTrail, Security Hub, and optional AWS Config.
+**Objective:** Establish and verify a GCP security services baseline, document the configuration and troubleshooting steps, and collect supporting compliance evidence.
 
-**Planned Implementation:**
-- Follow the official Lab 5.2 guide in its prescribed order.
-- Configure the required CloudTrail and Security Hub baseline.
-- Evaluate the optional AWS Config deployment as the guide directs.
-- Capture required security findings and verification evidence.
-- Complete the documented cleanup steps to control recurring AWS charges.
-
-**Cost Note:** Unlike earlier labs, AWS security services can generate ongoing charges while enabled.
-
-**Official Lab Guide:**
-[Lab 5.2 — AWS Security Services Baseline](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/05_02_aws_security_services.md)
-
-**Current Status:** In Progress — working through the official Lab 5.2 instructions; implementation and verification are not yet complete.
+**Current status:** In Progress — technical implementation and verification are underway. Final results and evidence will be documented when the lab is completed.
 
 ---
 
