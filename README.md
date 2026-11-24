@@ -48,7 +48,7 @@ This repository documents implementation steps, technical challenges, troublesho
 | 3.4 | Integrating Policy as Code with Terraform | Completed |
 | 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
 | 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
-| 5.2 | AWS Security Services Baseline | Technical Complete — Findings Published; Cleanup Pending |
+| 5.2 | AWS Security Services Baseline | Completed |
 
 ---
 
@@ -475,11 +475,15 @@ This repository documents implementation steps, technical challenges, troublesho
 **Official Lab Guide:**
 [Lab 4.4 — Evidence Management and Chain of Custody (AWS)](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/04_04_evidence_chain_of_custody.md)
 
-**Current Status:** Completed — evidence signing, vault upload, independent verification, receipt and writeup, and PR merge. AWS resource t### Lab 5.2 — AWS Security Services Baseline
+**Current Status:** Completed — evidence signing, vault upload, independent verification, receipt and writeup, and PR merge. AWS resource teardown is a separate post-lab activity.
+
+---
+
+### Lab 5.2 — AWS Security Services Baseline
 
 **Cloud Platform:** Amazon Web Services (AWS)
 
-**Status:** Technical implementation and verification completed; authentic findings evidence published; final AWS cleanup pending.
+**Status:** Completed — implementation, verification, evidence publication, and resource cleanup confirmed.
 
 **Objective:** Establish AWS-native continuous security evidence collection with a multi-region CloudTrail trail, AWS Security Hub CSPM standards, and AWS Config recording as the prerequisite for control evaluations.
 
@@ -492,7 +496,8 @@ This repository documents implementation steps, technical challenges, troublesho
 - NIST 800-53, FSBP, and the automatically enabled CIS benchmark subsequently all reported `READY`.
 - Security Hub returned five findings in the first evidence query. The locally captured `evidence/lab-5-2/security-hub-findings.json` was non-empty (approximately 25 KB). Example findings included an S3 MFA Delete failure and successful S3 public-access checks.
 - Authentic findings JSON was published from the local machine on branch `lab-5-2-final-publication` (commit `f702293`), with five findings verified in GitHub.
-- The original Terraform baseline does not manage the manually created AWS Config components; they require separate cleanup after evidence publication.
+- The AWS Config components were created outside Terraform and therefore cleaned up separately after the evidence was published.
+- Cleanup verified: `terraform destroy` reported 9 destroyed; Terraform state was empty; CloudTrail query returned `[]`; Security Hub confirmed the account was not subscribed; AWS Config recorder and delivery channel returned empty arrays; its dedicated S3 bucket was removed; the service-linked IAM role returned `NoSuchEntity`.
 
 **Control mapping:** AU-2/AU-12/AU-10 (CloudTrail), RA-5/SI-4 (Security Hub), CM-2/CM-6/CM-8 (AWS Config).
 
@@ -500,7 +505,8 @@ This repository documents implementation steps, technical challenges, troublesho
 
 **Official lab guide:** [Lab 5.2 — AWS Security Services Baseline](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/05_02_aws_security_services.md)
 
-**Current status:** Security services deployment, recording, standards evaluation, findings generation, and findings evidence publication verified. Final AWS resource cleanup remains open.
+**Current status:** Completed — deployed and verified security monitoring, resolved the AWS Config prerequisite, captured five real findings, merged publication PR [#17](https://github.com/Cesarmora809/cgep-labs/pull/17), and verified full cleanup of the Lab 5.2 AWS resources on November 23, 2026.
+
 ---
 
 ## Repository Structure
