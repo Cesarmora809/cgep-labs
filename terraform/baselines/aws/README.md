@@ -1,6 +1,6 @@
 # Lab 5.2 — AWS Security Services Baseline
 
-**Technical status:** Verified on November 23, 2026. **Publication status:** Authentic findings JSON published to branch `lab-5-2-final-publication` (commit `f702293`) and verified in GitHub; PR merge pending. **Cleanup:** Pending confirmation; AWS services may still be billable.
+**Status:** **Completed** on November 23, 2026 — Terraform deployment and verification, AWS Config troubleshooting, five Security Hub findings published to `main` through [PR #17](https://github.com/Cesarmora809/cgep-labs/pull/17), and AWS resource cleanup verified.
 
 ## Objective
 
@@ -62,7 +62,7 @@ After starting Config, Security Hub standards changed from `INCOMPLETE` to `READ
 - The locally captured `security-hub-findings.json` was **approximately 25 KB**, non-empty, and subsequently published to GitHub.
 - The CLI summary showed an S3 MFA Delete finding with compliance `FAILED` and S3 public-access findings with compliance `PASSED`.
 
-**Evidence:** [`evidence/lab-5-2/security-hub-findings.json`](../../../evidence/lab-5-2/security-hub-findings.json) contains the actual CLI export of five findings and has been committed to the Lab 5.2 publication branch. An earlier branch contains an obsolete `{"Findings":[]}` and must not be mistaken for the final evidence. **Public repository note:** Findings contain AWS account/resource identifiers; assess the exposure and redact if required by your disclosure policy.
+**Evidence:** [`evidence/lab-5-2/security-hub-findings.json`](../../../evidence/lab-5-2/security-hub-findings.json) contains the actual CLI export of five findings and is published on `main` following the merge of PR #17. An earlier branch contains an obsolete `{"Findings":[]}` and must not be mistaken for the final evidence. **Public repository note:** Findings contain AWS account/resource identifiers; assess the exposure and redact if required by your disclosure policy.
 
 Representative capture command (from `terraform/baselines/aws`):
 
@@ -80,16 +80,22 @@ aws securityhub get-findings --region us-east-1 --profile default --max-results 
 - No additional Lab 5.2 Rego policies or Bash scripts are required by the official guide. Existing policy-as-code and evidence scripts from earlier labs remain untouched.
 - The manually configured AWS Config infrastructure is **outside the Terraform state**; `terraform destroy` does **not** remove those resources.
 
-## Cleanup checklist — still to be verified
+## Cleanup — completed and verified
 
-After publishing the evidence:
+Following the successful evidence publication, AWS cleanup was executed and independently verified using the AWS CLI in account `409369915399`, region `us-east-1`:
 
-1. Run `terraform destroy -auto-approve` from `terraform/baselines/aws` to remove the nine Terraform-managed resources.
-2. Stop AWS Config recording.
-3. Delete its delivery channel.
-4. Delete its configuration recorder.
-5. Empty and remove the dedicated Config S3 bucket, after reviewing its contents.
-6. Verify the Config recorder and delivery channel are absent; optionally remove the service-linked role when no longer needed.
+| Resource or verification | Observed result |
+|---|---|
+| Terraform-managed CloudTrail, S3, Security Hub, and standard subscriptions | `Destroy complete! Resources: 9 destroyed.` |
+| Terraform state | Empty (`terraform state list` produced no managed resources) |
+| CloudTrail `cgep-lab-mgmt` | `describe-trails --trail-name-list cgep-lab-mgmt` returned `[]` |
+| Security Hub CSPM subscription | `describe-hub` returned `InvalidAccessException: Account ... is not subscribed to AWS Security Hub CSPM` |
+| AWS Config recorder | `ConfigurationRecorders: []` |
+| AWS Config delivery channel | `DeliveryChannels: []` |
+| Dedicated AWS Config S3 bucket | AWS CLI reported `remove_bucket` for `cgep-lab-5-2-config-409369915399-us-east-1` |
+| AWS Config service-linked IAM role | `iam get-role --role-name AWSServiceRoleForConfig` returned `NoSuchEntity` |
 
-**Do not mark cleanup complete until AWS command output confirms deletion.** AWS Config and Security Hub may generate costs until disabled.
+The recorder was stopped before its delivery channel and configuration recorder were deleted. The manually created AWS Config S3 bucket and IAM role were removed separately because they were never managed by the Terraform baseline. The service-linked role deletion request was accepted and later confirmed by the role's absence, although the deletion-task status API had temporarily returned `NoSuchEntity`.
+
+**Scope:** These checks establish removal of the Lab 5.2 resources listed above. They do not verify the full AWS account's billing status or unrelated infrastructure.
 
