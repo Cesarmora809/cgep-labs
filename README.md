@@ -488,7 +488,7 @@ This repository documents implementation steps, technical challenges, troublesho
 
 **Objective:** Establish AWS-native continuous security evidence collection with a multi-region CloudTrail trail, AWS Security Hub CSPM standards, and AWS Config recording as the prerequisite for control evaluations.
 
-**Implementation and verified results (November 23, 2026):**
+**Implementation and verified :**
 - Terraform deployed nine Lab 5.2 resources, including a multi-region CloudTrail trail, encrypted/private S3 log bucket, Security Hub account, and NIST 800-53 Rev. 5 and AWS Foundational Security Best Practices standard subscriptions.
 - CloudTrail reported `IsLogging: true`; Security Hub returned its hub ARN.
 - Initial subscriptions were `INCOMPLETE` with `NO_AVAILABLE_CONFIGURATION_RECORDER`, and no findings were returned.
