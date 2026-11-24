@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: projects/180835757380/locations/global/workloadIdentityPools/github-actions/providers/github
-          service_account: cgep-grc-gate-sa@grc-engineering-lab-512901.iam.gserviceaccount.com
+          workload_identity_provider: projects/187615743966/locations/global/workloadIdentityPools/github-actions/providers/github
+          service_account: cgep-grc-gate-sa@grc-engineering-lab-5-4.iam.gserviceaccount.com
 
-      - run: gcloud storage buckets list --project=grc-engineering-lab-512901 --format=json
+      - run: gcloud storage buckets list --project=grc-engineering-lab-5-4 --format=json
