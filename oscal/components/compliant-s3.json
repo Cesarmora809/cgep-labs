@@ -1,0 +1,138 @@
+{
+  "component-definition": {
+    "uuid": "ebb657e9-4927-491d-96a6-dba1b621012a",
+    "metadata": {
+      "title": "compliant-s3 module v1",
+      "last-modified": "2026-11-24T21:08:31.411162+00:00",
+      "version": "1.0.0",
+      "oscal-version": "1.2.1",
+      "roles": [
+        {
+          "id": "provider",
+          "title": "Component Provider"
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "8e1636b0-235a-4c84-83ce-0de6916aca13",
+          "type": "organization",
+          "name": "CGE-P Lab"
+        }
+      ]
+    },
+    "components": [
+      {
+        "uuid": "fb0798dd-405e-4fdd-9365-35f6c36e65db",
+        "type": "software",
+        "title": "compliant-s3",
+        "description": "Reusable Terraform pattern for an AWS S3 primary bucket plus a dedicated access-log bucket. Enforces server-side encryption, versioning, public access blocking, access logging, and required compliance tags.",
+        "purpose": "Provide a compliant-by-default S3 primitive.",
+        "responsible-roles": [
+          {
+            "role-id": "provider",
+            "party-uuids": [
+              "8e1636b0-235a-4c84-83ce-0de6916aca13"
+            ]
+          }
+        ],
+        "control-implementations": [
+          {
+            "uuid": "3a8aa0d0-3d00-4cc4-bc33-9cbd7806522b",
+            "source": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+            "description": "Implementation of selected NIST SP 800-53 Rev 5 control requirements by the compliant-s3 module.",
+            "implemented-requirements": [
+              {
+                "uuid": "3b7cfcae-0838-4240-a324-498028741516",
+                "control-id": "sc-28",
+                "description": "AES-256 server-side encryption is configured for the primary S3 bucket.",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_s3_bucket_server_side_encryption_configuration.primary"
+                  }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://cgep-lab-grc-evidence-vault-db012d6a/runs/45483910659/evidence-45483910659-f75aa5ad52596a8ec34cb14a577db05de7c37690.tar.gz",
+                    "text": "Signed pipeline bundle containing Terraform plan.json."
+                  }
+                ]
+              },
+              {
+                "uuid": "39f2db78-1398-4a00-ba91-b509448b246d",
+                "control-id": "ac-3",
+                "description": "All four S3 public access block settings are enabled for the primary bucket.",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_s3_bucket_public_access_block.primary"
+                  }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://cgep-lab-grc-evidence-vault-db012d6a/runs/45483910659/evidence-45483910659-f75aa5ad52596a8ec34cb14a577db05de7c37690.tar.gz",
+                    "text": "Signed pipeline bundle containing Terraform plan.json."
+                  }
+                ]
+              },
+              {
+                "uuid": "53b0f847-e940-4ac7-96d3-638c9c944860",
+                "control-id": "au-3",
+                "description": "S3 server access logging supports audit record generation by delivering access logs to a dedicated log bucket.",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_s3_bucket_logging.primary"
+                  }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://cgep-lab-grc-evidence-vault-db012d6a/runs/45483910659/evidence-45483910659-f75aa5ad52596a8ec34cb14a577db05de7c37690.tar.gz",
+                    "text": "Signed pipeline bundle containing Terraform plan.json."
+                  }
+                ]
+              },
+              {
+                "uuid": "e63c75a6-812a-4ab9-b99e-399fd03c99ba",
+                "control-id": "cm-6",
+                "description": "S3 versioning is enabled and required compliance tags are configured through provider default_tags.",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_s3_bucket_versioning.primary"
+                  }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://cgep-lab-grc-evidence-vault-db012d6a/runs/45483910659/evidence-45483910659-f75aa5ad52596a8ec34cb14a577db05de7c37690.tar.gz",
+                    "text": "Signed pipeline bundle containing Terraform plan.json."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

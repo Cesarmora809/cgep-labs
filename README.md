@@ -542,15 +542,52 @@ This repository documents implementation steps, technical challenges, troublesho
 
 **Focus:** Open Security Controls Assessment Language (OSCAL)
 
-**Status:** In Progress
+**Status:** Completed
 
-**Objective:** Represent security control implementations and evidence in machine-readable OSCAL format using a component definition and control profile, validated with `compliance-trestle`.
+**Completion date:** November 24, 2026
 
-**Planned deliverables:** OSCAL component definition, minimal control profile, validation evidence, and accompanying README. Technical implementation and results will be documented as the lab progresses.
+**Objective:** Represent security control implementations and evidence in machine-readable OSCAL format using a component definition and control profile, validated with compliance-trestle.
+
+**Tools used:**
+
+- Python 3.12.10
+- Compliance Trestle 5.2.1
+- NIST OSCAL 1.2.1
+- Terraform
+- AWS CLI
+- AWS S3 Evidence Vault
+- Cosign
+- GitHub Actions
+
+**Security controls mapped:**
+
+- SC-28 — Protection of Information at Rest
+- AC-3 — Access Enforcement
+- AU-3 — Content of Audit Records
+- CM-6 — Configuration Settings
+
+**Completed deliverables:**
+
+- [OSCAL component definition](oscal/components/compliant-s3.json)
+- [OSCAL control profile](oscal/profiles/cge-p-minimum.json)
+- [Trestle validation evidence](evidence/lab-6-1/trestle-validate.txt)
+- [OSCAL documentation](oscal/README.md)
+
+**Verification results:**
+
+- Component definition: VALID
+- Control profile: VALID
+- Resolved OSCAL catalog: Successfully generated
+- Cryptographic evidence verification: CHAIN INTACT
+- Verified GitHub Actions evidence run: 45483910659
+
+**Outcome:** Successfully connected machine-readable security control documentation to Terraform implementations and cryptographically signed compliance evidence stored in AWS S3.
+
+**GRC engineering application:** Enables assessors to trace documented control implementations to technical configurations and supporting evidence, improving audit readiness, evidence integrity, and compliance automation.
 
 **Official lab guide:** [Lab 6.1 — Introduction to OSCAL](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/06_01_introduction_to_oscal.md)
 
-**Current status:** In Progress — next lab selected; technical implementation has not yet been documented.
+**Current status:** Completed — all official lab requirements successfully verified.
 
 ---
 
