@@ -14,3 +14,4 @@ crash.log
 # Original Lab 2.3 Terraform evidence (local only)
 evidence/lab-2-3/plan.json
 evidence/lab-2-3/state.json
+.trestle-work/

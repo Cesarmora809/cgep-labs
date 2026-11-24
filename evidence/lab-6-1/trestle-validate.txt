@@ -1,0 +1,1 @@
+VALID: Model C:\Users\cesar\cgep-labs-lab54-merge\.trestle-work\component-definitions\compliant-s3-v1\component-definition.json passed the Validator to confirm the model passes all registered validation tests.
