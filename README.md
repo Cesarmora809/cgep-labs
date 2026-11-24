@@ -49,6 +49,7 @@ This repository documents implementation steps, technical challenges, troublesho
 | 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
 | 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
 | 5.2 | AWS Security Services Baseline | Completed |
+| 5.4 | GCP Security Services Baseline | In Progress |
 
 ---
 
@@ -506,6 +507,18 @@ This repository documents implementation steps, technical challenges, troublesho
 **Official lab guide:** [Lab 5.2 — AWS Security Services Baseline](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/05_02_aws_security_services.md)
 
 **Current status:** Completed — deployed and verified security monitoring, resolved the AWS Config prerequisite, captured five real findings, merged publication PR [#17](https://github.com/Cesarmora809/cgep-labs/pull/17), and verified full cleanup of the Lab 5.2 AWS resources on November 23, 2026.
+
+---
+
+### Lab 5.4 — GCP Security Services Baseline
+
+**Cloud Platform:** Google Cloud Platform (GCP)
+
+**Status:** In Progress
+
+**Objective:** Establish and verify a GCP security services baseline, document the configuration and troubleshooting steps, and collect supporting compliance evidence.
+
+**Current status:** In Progress — technical implementation and verification are underway. Final results and evidence will be documented when the lab is completed.
 
 ---
 
