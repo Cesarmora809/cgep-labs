@@ -49,7 +49,8 @@ This repository documents implementation steps, technical challenges, troublesho
 | 4.3 | Building a GRC Evidence Pipeline — AWS + GitHub Actions | Completed |
 | 4.4 | Evidence Management and Chain of Custody — AWS | Completed |
 | 5.2 | AWS Security Services Baseline | Completed |
-| 5.4 | GCP Security Services Baseline | In Progress |
+| 5.4 | GCP Security Services Baseline | Completed |
+| 6.1 | Introduction to OSCAL | In Progress |
 
 ---
 
@@ -514,11 +515,42 @@ This repository documents implementation steps, technical challenges, troublesho
 
 **Cloud Platform:** Google Cloud Platform (GCP)
 
+**Status:** Completed
+
+**Objective:** Deploy and verify preventive Organization Policies, keyless GitHub Actions authentication through Workload Identity Federation, and Data Access audit logging using Terraform.
+
+**Implementation and verification:**
+- Enforced `storage.uniformBucketLevelAccess`, `iam.disableServiceAccountKeyCreation`, and `compute.requireOsLogin`.
+- Configured a GitHub OIDC Workload Identity Federation provider restricted to `Cesarmora809/cgep-labs`, with a read-only service account.
+- Enabled `DATA_READ`, `DATA_WRITE`, and `ADMIN_READ` audit configurations for Cloud Storage, Cloud KMS, and IAM.
+- Deployed and verified all 11 Terraform resources. The three policies were set and the WIF pool was active.
+- Confirmed service-account key creation was denied with `FAILED_PRECONDITION`.
+- Verified keyless GitHub Actions authentication to the GCP project with a successful workflow run.
+- Completed cleanup using Terraform: all 11 deployed resources destroyed.
+
+**Source code and documentation:** [Lab 5.4 Terraform baseline](terraform/baselines/gcp/)
+
+**Evidence:** [Data Access audit configuration](evidence/lab-5-4/iam-policy.json) · [Successful GitHub Actions WIF run](https://github.com/Cesarmora809/cgep-labs/actions/runs/45482136121)
+
+**Official lab guide:** [Lab 5.4 — GCP Security Services Baseline](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/05_04_gcp_security_services.md)
+
+**Current status:** Completed — preventive controls enforced and tested, audit configuration evidence committed, WIF demonstration passed, and Terraform resources cleaned up on November 24, 2026. Optional Security Command Center findings were not captured.
+
+---
+
+### Lab 6.1 — Introduction to OSCAL
+
+**Focus:** Open Security Controls Assessment Language (OSCAL)
+
 **Status:** In Progress
 
-**Objective:** Establish and verify a GCP security services baseline, document the configuration and troubleshooting steps, and collect supporting compliance evidence.
+**Objective:** Represent security control implementations and evidence in machine-readable OSCAL format using a component definition and control profile, validated with `compliance-trestle`.
 
-**Current status:** In Progress — technical implementation and verification are underway. Final results and evidence will be documented when the lab is completed.
+**Planned deliverables:** OSCAL component definition, minimal control profile, validation evidence, and accompanying README. Technical implementation and results will be documented as the lab progresses.
+
+**Official lab guide:** [Lab 6.1 — Introduction to OSCAL](https://github.com/GRCEngClub/cgep-labs/blob/main/guides/06_01_introduction_to_oscal.md)
+
+**Current status:** In Progress — next lab selected; technical implementation has not yet been documented.
 
 ---
 
